@@ -2,15 +2,15 @@
 # These variables are overwritten by Zenoss when the ZenPack is exported
 # or saved.  Do not modify them directly here.
 # NB: PACKAGES is deprecated
-NAME = "ZenPacks.zenoss.RabbitMQ"
-VERSION = "1.0.0"
+NAME = "ZenPacks.community.RabbitMQ"
+VERSION = "1.0.0~alienth1"
 AUTHOR = "Zenoss Labs"
 LICENSE = ""
-NAMESPACE_PACKAGES = ['ZenPacks', 'ZenPacks.zenoss']
-PACKAGES = ['ZenPacks', 'ZenPacks.zenoss', 'ZenPacks.zenoss.RabbitMQ']
+NAMESPACE_PACKAGES = ['ZenPacks', 'ZenPacks.community']
+PACKAGES = ['ZenPacks', 'ZenPacks.community', 'ZenPacks.community.RabbitMQ']
 INSTALL_REQUIRES = []
 COMPAT_ZENOSS_VERS = ">=3.2"
-PREV_ZENPACK_NAME = ""
+PREV_ZENPACK_NAME = "ZenPacks.zenoss.RabbitMQ"
 # STOP_REPLACEMENTS
 ################################
 # Zenoss will not overwrite any changes you make below here.
