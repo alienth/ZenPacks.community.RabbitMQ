@@ -30,7 +30,7 @@ from Products.ZenUtils.Utils import unused
 unused(Globals)
 
 
-ZENPACK_NAME = 'ZenPacks.zenoss.RabbitMQ'
+ZENPACK_NAME = 'ZenPacks.community.RabbitMQ'
 
 # Define new device relations.
 NEW_DEVICE_RELATIONS = (

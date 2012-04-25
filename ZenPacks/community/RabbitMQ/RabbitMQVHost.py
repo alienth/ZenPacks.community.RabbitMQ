@@ -21,15 +21,15 @@ class RabbitMQVHost(RabbitMQComponent):
 
     _relations = RabbitMQComponent._relations + (
         ('rabbitmq_node', ToOne(ToManyCont,
-            'ZenPacks.zenoss.RabbitMQ.RabbitMQNode.RabbitMQNode',
+            'ZenPacks.community.RabbitMQ.RabbitMQNode.RabbitMQNode',
             'rabbitmq_vhosts',
             ),),
         ('rabbitmq_exchanges', ToManyCont(ToOne,
-            'ZenPacks.zenoss.RabbitMQ.RabbitMQExchange.RabbitMQExchange',
+            'ZenPacks.community.RabbitMQ.RabbitMQExchange.RabbitMQExchange',
             'rabbitmq_vhost',
             ),),
         ('rabbitmq_queues', ToManyCont(ToOne,
-            'ZenPacks.zenoss.RabbitMQ.RabbitMQQueue.RabbitMQQueue',
+            'ZenPacks.community.RabbitMQ.RabbitMQQueue.RabbitMQQueue',
             'rabbitmq_vhost',
             ),),
         )

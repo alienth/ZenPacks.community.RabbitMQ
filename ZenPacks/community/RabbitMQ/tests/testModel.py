@@ -37,8 +37,8 @@ class TestModel(BaseTestCase):
         import Products.ZenUI3.navigation
         zcml.load_config('testing.zcml', Products.ZenUI3.navigation)
 
-        import ZenPacks.zenoss.RabbitMQ
-        zcml.load_config('configure.zcml', ZenPacks.zenoss.RabbitMQ)
+        import ZenPacks.community.RabbitMQ
+        zcml.load_config('configure.zcml', ZenPacks.community.RabbitMQ)
 
     def _loadZenossData(self):
         modeler = RabbitMQModeler()

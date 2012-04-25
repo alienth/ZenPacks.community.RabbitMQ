@@ -25,7 +25,7 @@ class RabbitMQNode(RabbitMQComponent):
             'rabbitmq_nodes',
             ),),
         ('rabbitmq_vhosts', ToManyCont(ToOne,
-            'ZenPacks.zenoss.RabbitMQ.RabbitMQVHost.RabbitMQVHost',
+            'ZenPacks.community.RabbitMQ.RabbitMQVHost.RabbitMQVHost',
             'rabbitmq_node',
             ),),
         )
