@@ -10,7 +10,7 @@ NAMESPACE_PACKAGES = ['ZenPacks', 'ZenPacks.community']
 PACKAGES = ['ZenPacks', 'ZenPacks.community', 'ZenPacks.community.RabbitMQ']
 INSTALL_REQUIRES = []
 COMPAT_ZENOSS_VERS = ">=3.2"
-PREV_ZENPACK_NAME = "ZenPacks.zenoss.RabbitMQ"
+PREV_ZENPACK_NAME = ""
 # STOP_REPLACEMENTS
 ################################
 # Zenoss will not overwrite any changes you make below here.
