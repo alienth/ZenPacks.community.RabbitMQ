@@ -102,10 +102,10 @@ class RabbitMQ(PythonPlugin):
                     'title': vhost_title,
                     }))
 
-                exchanges = self.getExchangeRelMap(results['exchanges'], vhost_id,
+                exchanges = self.getExchangeRelMap(results['exchanges'], vhost_title,
                     '%s/rabbitmq_vhosts/%s' % (compname, vhost_id))
 
-                queues = self.getQueueRelMap(results['queues'], vhost_id,
+                queues = self.getQueueRelMap(results['queues'], vhost_title,
                     '%s/rabbitmq_vhosts/%s' % (compname, vhost_id))
 
                 LOG.info(
@@ -152,29 +152,17 @@ class RabbitMQ(PythonPlugin):
 
     def getQueueRelMap(self, vhost, queues, compname):
         object_maps = []
-        for queue_string in queues_string.split('\n'):
-            if not queue_string.strip():
+
+        for item in queues:
+            if not item['vhost'] == vhost:
                 continue
 
-            name, durable, auto_delete, arguments = \
-                re.split(r'\s+', queue_string)
-
-            if re.search(r'true', durable, re.I):
-                durable = True
-            else:
-                durable = False
-
-            if re.search(r'true', auto_delete, re.I):
-                auto_delete = True
-            else:
-                auto_delete = False
-
             object_maps.append(ObjectMap(data={
-                'id': prepId(name),
-                'title': name,
-                'durable': durable,
-                'auto_delete': auto_delete,
-                'arguments': arguments,
+                'id': prepId(item['name']),
+                'title': item['name'],
+                'durable': item['durable'],
+                'auto_delete': item['auto_delete'],
+                'arguments': ','.join(chain(*item.['arguments'].items())),
                 }))
 
         return RelationshipMap(
