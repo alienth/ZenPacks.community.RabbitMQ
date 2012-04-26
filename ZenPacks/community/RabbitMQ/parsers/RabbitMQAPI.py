@@ -51,7 +51,7 @@ def loadData(keys, expiration=1800):
     return data
 
 
-class RabbitMQCTL(CommandParser):
+class RabbitMQAPI(CommandParser):
     eventKey = eventClassKey = 'rabbitmq_node_status'
 
     event = None
@@ -61,21 +61,19 @@ class RabbitMQCTL(CommandParser):
         Router method that allows this parser to be used for all rabbitmqctl
         subcommands.
         """
-        if 'rabbitmqctl' not in cmd.command:
-            return
 
         # Get as much error handling out of the way right away.
         if self.isError(cmd, result):
             return
 
         # Route to the right parser based on the command.
-        if 'status' in cmd.command:
+        if '/api/overview' in cmd.command:
             self.processStatusResults(cmd, result)
-        elif 'list_connections' in cmd.command:
+        elif '/api/connections' in cmd.command:
             self.processListConnectionsResults(cmd, result)
-        elif 'list_channels' in cmd.command:
+        elif '/api/channels' in cmd.command:
             self.processListChannelsResults(cmd, result)
-        elif 'list_queues' in cmd.command:
+        elif '/api/queues' in cmd.command:
             self.processListQueuesResults(cmd, result)
 
     def processStatusResults(self, cmd, result):
