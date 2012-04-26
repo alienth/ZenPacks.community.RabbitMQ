@@ -80,24 +80,19 @@ class RabbitMQ(PythonPlugin):
 
         # vhosts
         maps.extend(self.getVHostRelMap(
-            device, command_strings[1], 'rabbitmq_nodes/%s' % node_id))
+            device, results, 'rabbitmq_nodes/%s' % node_id))
 
         return maps
 
-    def getVHostRelMap(self, device, vhosts_string, compname):
+    def getVHostRelMap(self, device, results, compname):
         rel_maps = []
         object_maps = []
 
-        for vhost_string in vhosts_string.split('__VHOST__'):
-            if not vhost_string.strip():
-                continue
+        vhostjson = json.loads(results['vhosts'])
 
-            name_string, exchanges_string, queues_string = \
-                vhost_string.split('__SPLIT__')
-
-            match = re.search('VHOST:\s+(.+)$', name_string)
-            if match:
-                vhost_title = match.group(1)
+        for item in vhostjson:
+            if item['name']:
+                vhost_title = item['name']
                 vhost_id = prepId(vhost_title)
 
                 object_maps.append(ObjectMap(data={
@@ -105,10 +100,10 @@ class RabbitMQ(PythonPlugin):
                     'title': vhost_title,
                     }))
 
-                exchanges = self.getExchangeRelMap(exchanges_string,
+                exchanges = self.getExchangeRelMap(results['exchanges'],
                     '%s/rabbitmq_vhosts/%s' % (compname, vhost_id))
 
-                queues = self.getQueueRelMap(queues_string,
+                queues = self.getQueueRelMap(results['queues'],
                     '%s/rabbitmq_vhosts/%s' % (compname, vhost_id))
 
                 LOG.info(
@@ -124,6 +119,8 @@ class RabbitMQ(PythonPlugin):
             relname='rabbitmq_vhosts',
             modname='ZenPacks.community.RabbitMQ.RabbitMQVHost',
             objmaps=object_maps)] + rel_maps
+
+
 
     def getExchangeRelMap(self, exchanges_string, compname):
         object_maps = []
