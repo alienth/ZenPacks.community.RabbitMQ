@@ -15,6 +15,8 @@ import logging
 LOG = logging.getLogger('zen.RabbitMQ')
 
 import re
+import json
+import urllib
 
 from Products.DataCollector.plugins.CollectorPlugin import PythonPlugin
 from Products.DataCollector.plugins.DataMaps import ObjectMap, RelationshipMap
@@ -22,21 +24,25 @@ from Products.ZenUtils.Utils import prepId
 
 
 class RabbitMQ(PythonPlugin):
-    command = (
-        'rabbitmqctl status 2>&1 && ('
-        'echo __COMMAND__ ; '
-        'for vhost in $(rabbitmqctl -q list_vhosts) ; do '
-        'echo "VHOST: $vhost" ; '
-        'echo "__SPLIT__" ; '
-        'rabbitmqctl -q list_exchanges -p $vhost '
-        'name type durable auto_delete arguments ; '
-        'echo "__SPLIT__" ; '
-        'rabbitmqctl -q list_queues -p $vhost '
-        'name durable auto_delete arguments ; '
-        'echo "__VHOST__" ; '
-        'done'
-        ')'
-        )
+
+    def collect(self, device, log):
+        # FIXME - This should use a zProp
+        rabbitmq_url = "http://guest:guest@%s:55672" % device.manageIp
+
+        foo = {}
+        types = ['nodes', 'vhosts', 'exchanges', 'queues']
+
+        for i in types:
+            try:
+                url = "%s/api/%s" % (rabbitmq_url, i)
+                f = urllib.urlopen(url)
+                foo[i] = f.read()
+            except:
+                LOG.info('unable to access rabbit')
+
+
+    return foo
+
 
     def process(self, device, results, unused):
         LOG.info('Trying rabbitmqctl on %s', device.id)
