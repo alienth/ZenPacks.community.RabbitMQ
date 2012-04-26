@@ -93,26 +93,7 @@ class RabbitMQAPI(CommandParser):
                 cmd, "alive check failed"))
 
     def processListConnectionsResults(self, cmd, result):
-        connections = {}
-
-        for line in cmd.result.output.split('\n'):
-            if not line:
-                continue
-
-            fields = re.split(r'\s+', line.rstrip())
-
-            # pid, channels, recv_oct, recv_cnt, send_oct, send_cnt, send_pend
-            if len(fields) != 7:
-                return
-
-            connections[fields[0]] = dict(
-                channels=int(fields[1]),
-                recvBytes=int(fields[2]),
-                recvCount=int(fields[3]),
-                sendBytes=int(fields[4]),
-                sendCount=int(fields[5]),
-                sendQueue=int(fields[6]),
-                )
+        connections = json.loads(result)
 
         dp_map = dict([(dp.id, dp) for dp in cmd.points])
 
@@ -132,7 +113,7 @@ class RabbitMQAPI(CommandParser):
         # collection.
         if 'connections' in dp_map:
             result.values.append((
-                dp_map['connections'], len(connections.keys())))
+                dp_map['connections'], len(connections)))
 
         if 'channels' in dp_map:
             result.values.append((dp_map['channels'], reduce(
