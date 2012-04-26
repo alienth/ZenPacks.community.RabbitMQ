@@ -91,6 +91,8 @@ class RabbitMQ(PythonPlugin):
         object_maps = []
 
         vhostjson = json.loads(results['vhosts'])
+        exchangejson = json.loads(results['exchanges'])
+        queuejson = json.loads(results['queues'])
 
         for item in vhostjson:
             if item['name']:
@@ -102,10 +104,10 @@ class RabbitMQ(PythonPlugin):
                     'title': vhost_title,
                     }))
 
-                exchanges = self.getExchangeRelMap(results['exchanges'], vhost_title,
+                exchanges = self.getExchangeRelMap(exchangejson, vhost_title,
                     '%s/rabbitmq_vhosts/%s' % (compname, vhost_id))
 
-                queues = self.getQueueRelMap(results['queues'], vhost_title,
+                queues = self.getQueueRelMap(queuejson, vhost_title,
                     '%s/rabbitmq_vhosts/%s' % (compname, vhost_id))
 
                 LOG.info(
@@ -124,7 +126,7 @@ class RabbitMQ(PythonPlugin):
 
 
 
-    def getExchangeRelMap(self, vhost, exchanges, compname):
+    def getExchangeRelMap(self, exchanges, vhost, compname):
         object_maps = []
 
         for item in exchanges:
@@ -150,7 +152,7 @@ class RabbitMQ(PythonPlugin):
             modname='ZenPacks.community.RabbitMQ.RabbitMQExchange',
             objmaps=object_maps)
 
-    def getQueueRelMap(self, vhost, queues, compname):
+    def getQueueRelMap(self, queues, vhost, compname):
         object_maps = []
 
         for item in queues:
