@@ -18,6 +18,8 @@ import re
 import json
 import urllib
 
+from itertools import chain
+
 from Products.DataCollector.plugins.CollectorPlugin import PythonPlugin
 from Products.DataCollector.plugins.DataMaps import ObjectMap, RelationshipMap
 from Products.ZenUtils.Utils import prepId
@@ -100,10 +102,10 @@ class RabbitMQ(PythonPlugin):
                     'title': vhost_title,
                     }))
 
-                exchanges = self.getExchangeRelMap(results['exchanges'],
+                exchanges = self.getExchangeRelMap(results['exchanges'], vhost_id,
                     '%s/rabbitmq_vhosts/%s' % (compname, vhost_id))
 
-                queues = self.getQueueRelMap(results['queues'],
+                queues = self.getQueueRelMap(results['queues'], vhost_id,
                     '%s/rabbitmq_vhosts/%s' % (compname, vhost_id))
 
                 LOG.info(
@@ -122,36 +124,25 @@ class RabbitMQ(PythonPlugin):
 
 
 
-    def getExchangeRelMap(self, exchanges_string, compname):
+    def getExchangeRelMap(self, vhost, exchanges, compname):
         object_maps = []
-        for exchange_string in exchanges_string.split('\n'):
-            if not exchange_string.strip():
+
+        for item in exchanges:
+            if not item['vhost'] == vhost:
                 continue
 
-            name, exchange_type, durable, auto_delete, arguments = \
-                re.split(r'\s+', exchange_string)
-
-            if not name:
-                name = 'amq.default'
-
-            if re.search(r'true', durable, re.I):
-                durable = True
-            else:
-                durable = False
-
-            if re.search(r'true', auto_delete, re.I):
-                auto_delete = True
-            else:
-                auto_delete = False
+            if not item['name']:
+                item['name'] = 'amq.default'
 
             object_maps.append(ObjectMap(data={
-                'id': prepId(name),
-                'title': name,
-                'exchange_type': exchange_type,
-                'durable': durable,
-                'auto_delete': auto_delete,
-                'arguments': arguments,
+                'id': prepId(item['name']),
+                'title': item['name'],
+                'exchange_type': item['type'],
+                'durable': item['durable'],
+                'auto_delete': item['auto_delete'],
+                'arguments': ','.join(chain(*item.['arguments'].items())),
                 }))
+
 
         return RelationshipMap(
             compname=compname,
@@ -159,7 +150,7 @@ class RabbitMQ(PythonPlugin):
             modname='ZenPacks.community.RabbitMQ.RabbitMQExchange',
             objmaps=object_maps)
 
-    def getQueueRelMap(self, queues_string, compname):
+    def getQueueRelMap(self, vhost, queues, compname):
         object_maps = []
         for queue_string in queues_string.split('\n'):
             if not queue_string.strip():
