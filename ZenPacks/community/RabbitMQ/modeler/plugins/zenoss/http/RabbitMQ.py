@@ -43,7 +43,7 @@ class RabbitMQ(PythonPlugin):
                 LOG.info('unable to access rabbit')
 
 
-    return foo
+        return foo
 
 
     def process(self, device, results, unused):
@@ -140,7 +140,7 @@ class RabbitMQ(PythonPlugin):
                 'exchange_type': item['type'],
                 'durable': item['durable'],
                 'auto_delete': item['auto_delete'],
-                'arguments': ','.join(chain(*item.['arguments'].items())),
+                'arguments': ','.join(chain(*item['arguments'].items())),
                 }))
 
 
@@ -162,7 +162,7 @@ class RabbitMQ(PythonPlugin):
                 'title': item['name'],
                 'durable': item['durable'],
                 'auto_delete': item['auto_delete'],
-                'arguments': ','.join(chain(*item.['arguments'].items())),
+                'arguments': ','.join(chain(*item['arguments'].items())),
                 }))
 
         return RelationshipMap(
