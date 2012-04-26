@@ -247,25 +247,16 @@ class RabbitMQAPI(CommandParser):
                     point, queues[point.component][point.id]))
 
     def isError(self, cmd, result):
-        match = re.search(r'^Error: (.+)$', cmd.result.output, re.MULTILINE)
-        if match:
+        try:
+            json.loads(result)
+        except:
             result.events.append(self.getEvent(
-                cmd, match.group(1),
-                message=cmd.result.output))
-
-            return True
-
-        match = re.search(r'command not found', cmd.result.output, re.MULTILINE)
-        if match:
-            result.events.append(self.getEvent(
-                cmd, "command not found: rabbitmqctl",
-                message=cmd.result.output))
-
+                cmd, "could not parse json")
             return True
 
         if cmd.result.exitCode != 0:
             result.events.append(self.getEvent(
-                cmd, "rabbitmqctl error - see event message",
+                cmd, "error reading rabbitmq api",
                 message=cmd.result.output))
 
             return True
