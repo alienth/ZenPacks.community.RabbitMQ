@@ -16,12 +16,12 @@ LOG = logging.getLogger('zen.RabbitMQ')
 
 import re
 
-from Products.DataCollector.plugins.CollectorPlugin import CommandPlugin
+from Products.DataCollector.plugins.CollectorPlugin import PythonPlugin
 from Products.DataCollector.plugins.DataMaps import ObjectMap, RelationshipMap
 from Products.ZenUtils.Utils import prepId
 
 
-class RabbitMQ(CommandPlugin):
+class RabbitMQ(PythonPlugin):
     command = (
         'rabbitmqctl status 2>&1 && ('
         'echo __COMMAND__ ; '
