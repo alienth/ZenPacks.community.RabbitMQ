@@ -85,10 +85,10 @@ class RabbitMQAPI(CommandParser):
     def processAliveResults(self, cmd, result):
 
         data = json.loads(result)
-        if data.['status'] == 'ok':
+        if data['status'] == 'ok':
             result.events.append(self.getEvent(
                 cmd, "alive check OK", clear=True))
-        else
+        else:
             result.events.append(self.getEvent(
                 cmd, "alive check failed"))
 
@@ -251,7 +251,7 @@ class RabbitMQAPI(CommandParser):
             json.loads(result)
         except:
             result.events.append(self.getEvent(
-                cmd, "could not parse json")
+                cmd, "could not parse json"))
             return True
 
         if cmd.result.exitCode != 0:
