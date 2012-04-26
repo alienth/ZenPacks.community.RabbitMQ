@@ -45,10 +45,7 @@ class RabbitMQ(PythonPlugin):
 
 
     def process(self, device, results, unused):
-        LOG.info('Trying rabbitmqctl on %s', device.id)
-
-        # [0] == status, [1] == everything else (optional)
-        command_strings = results.split('__COMMAND__')
+        LOG.info('Trying RabbitMQ on %s', device.id)
 
         maps = []
 
@@ -57,10 +54,11 @@ class RabbitMQ(PythonPlugin):
         node_id = None
         nodes = []
 
-        for line in command_strings[0].split('\n'):
-            match = re.search(r'Status of node (\S+)\s', line)
-            if match:
-                node_title = match.group(1).strip("'")
+        nodejson = json.loads(results['nodes'])
+
+        for item in nodejson:
+            if item['name']:
+                node_title = item['name']
                 node_id = prepId(node_title)
                 nodes.append(ObjectMap(data={
                     'id': node_id,
@@ -68,15 +66,6 @@ class RabbitMQ(PythonPlugin):
                     }))
 
                 continue
-
-            match = re.search(r'^(Error: .+)$', line)
-            if match:
-                LOG.info('Found node %s in error state on %s',
-                    node_title, device.id)
-
-                # We can't find enough information to knowingly update the
-                # model if RabbitMQ is down.
-                return None
 
         if len(nodes) > 0:
             LOG.info('Found node %s on %s', node_title, device.id)
