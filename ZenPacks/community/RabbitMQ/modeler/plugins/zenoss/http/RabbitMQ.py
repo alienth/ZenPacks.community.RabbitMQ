@@ -27,9 +27,17 @@ from Products.ZenUtils.Utils import prepId
 
 class RabbitMQ(PythonPlugin):
 
+
+    deviceProperties = PythonPlugin.deviceProperties + ('zRabbitMQAPIUsername',
+                                                        'zRabbitMQAPIPassword',
+                                                        'zRabbitMQAPIPort',
+                                                       )
     def collect(self, device, log):
-        # FIXME - This should use a zProp
-        rabbitmq_url = "http://guest:guest@%s:55672" % device.manageIp
+        username = getattr(device, 'zRabbitMQAPIUsername', None)
+        password = getattr(device, 'zRabbitMQAPIPassword', None)
+        port = getattr(device, 'zRabbitMQAPIPort', None)
+        rabbitmq_url = "http://%s:%s@%s:%s" % (username, password, device.manageIp, port)
+        LOG.info('Trying RabbitMQ API on %s', device.id)
 
         foo = {}
         types = ['nodes', 'vhosts', 'exchanges', 'queues']
@@ -47,8 +55,6 @@ class RabbitMQ(PythonPlugin):
 
 
     def process(self, device, results, unused):
-        LOG.info('Trying RabbitMQ on %s', device.id)
-
         maps = []
 
         # nodes - only one for now

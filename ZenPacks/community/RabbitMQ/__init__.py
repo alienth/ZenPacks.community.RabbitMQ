@@ -51,6 +51,12 @@ class ZenPack(ZenPackBase):
     ZenPack loader that handles custom installation and removal tasks.
     """
 
+    packZProperties = [
+        ('zRabbitMQAPIPort', 55672, 'int'),
+        ('zRabbitMQAPIUsername', 'guest', 'string'),
+        ('zRabbitMQAPIPassword', 'guest', 'string'),
+        ]
+
     def install(self, app):
         super(ZenPack, self).install(app)
         self._buildDeviceRelations()
