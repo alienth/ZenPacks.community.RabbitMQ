@@ -69,6 +69,8 @@ class RabbitMQAPI(CommandParser):
         # Route to the right parser based on the command.
         if '/api/overview' in cmd.command:
             self.processStatusResults(cmd, result)
+        elif '/api/aliveness-test' in cmd.command:
+            self.processAliveResults(cmd, result)
         elif '/api/connections' in cmd.command:
             self.processListConnectionsResults(cmd, result)
         elif '/api/channels' in cmd.command:
@@ -79,6 +81,16 @@ class RabbitMQAPI(CommandParser):
     def processStatusResults(self, cmd, result):
         result.events.append(self.getEvent(
             cmd, "node status is OK", clear=True))
+
+    def processAliveResults(self, cmd, result):
+
+        data = json.loads(result)
+        if data.['status'] == 'ok':
+            result.events.append(self.getEvent(
+                cmd, "alive check OK", clear=True))
+        else
+            result.events.append(self.getEvent(
+                cmd, "alive check failed"))
 
     def processListConnectionsResults(self, cmd, result):
         connections = {}
