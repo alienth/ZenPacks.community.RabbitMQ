@@ -123,25 +123,16 @@ class RabbitMQAPI(CommandParser):
                     (x[metrics[metric]] for x in channels))))
 
     def processListQueuesResults(self, cmd, result):
+        queuedata = json.loads(result)
+
         queues = {}
-
-        for line in cmd.result.output.split('\n'):
-            if not line:
-                continue
-
-            fields = re.split(r'\s+', line.rstrip())
-
-            # name messages_ready messages_unacknowledged messages consumers
-            # memory
-            if len(fields) != 6:
-                return
-
-            queues[fields[0]] = dict(
-                ready=int(fields[1]),
-                unacknowledged=int(fields[2]),
-                messages=int(fields[3]),
-                consumers=int(fields[4]),
-                memory=int(fields[5]),
+        for queue in queuedata:
+            queues[queuedata['name']] = dict(
+                ready =           queuedata['messages_ready'],
+                unacknowledged =  queuedata['messages_unacknowledged'],
+                messages =        queuedata['messages'],
+                consumers =       queuedata['consumers'],
+                memory =          queuedata['memory'],
                 )
 
         if len(queues.keys()) < 1:
