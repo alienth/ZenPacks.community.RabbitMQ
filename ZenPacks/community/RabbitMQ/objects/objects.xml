@@ -32,16 +32,16 @@ rabbitmq_node_status
 4
 </property>
 <property type="string" id="commandTemplate" mode="w" >
-rabbitmqctl -q -n ${here/title} list_channels pid consumer_count messages_unacknowledged acks_uncommitted 2&gt;&amp;1
+${here/ZenPackManager/packs/ZenPacks.community.RabbitMQ/path}/libexec/curl.sh -s http://${device/zRabbitMQAPIUsername}:${device/zRabbitMQAPIPassword}@${device/manageIp}:${device/zRabbitMQAPIPort}/api/channels
 </property>
 <property type="int" id="cycletime" mode="w" >
 300
 </property>
 <property type="boolean" id="usessh" mode="w" >
-True
+False
 </property>
 <property type="string" id="parser" mode="w" >
-ZenPacks.community.RabbitMQ.parsers.RabbitMQCTL
+ZenPacks.community.RabbitMQ.parsers.RabbitMQAPI
 </property>
 <tomanycont id='datapoints'>
 <object id='consumers' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -117,16 +117,16 @@ rabbitmq_node_status
 4
 </property>
 <property type="string" id="commandTemplate" mode="w" >
-rabbitmqctl -q -n ${here/title} list_connections pid channels recv_oct recv_cnt send_oct send_cnt send_pend 2&gt;&amp;1
+${here/ZenPackManager/packs/ZenPacks.community.RabbitMQ/path}/libexec/curl.sh -s http://${device/zRabbitMQAPIUsername}:${device/zRabbitMQAPIPassword}@${device/manageIp}:${device/zRabbitMQAPIPort}/api/connections
 </property>
 <property type="int" id="cycletime" mode="w" >
 300
 </property>
 <property type="boolean" id="usessh" mode="w" >
-True
+False
 </property>
 <property type="string" id="parser" mode="w" >
-ZenPacks.community.RabbitMQ.parsers.RabbitMQCTL
+ZenPacks.community.RabbitMQ.parsers.RabbitMQAPI
 </property>
 <tomanycont id='datapoints'>
 <object id='channels' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -161,74 +161,6 @@ True
 </property>
 <property type="string" id="description" mode="w" >
 Number of open connections to this RabbitMQ node.
-</property>
-</object>
-<object id='recvBytes' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Total received bytes per second on this RabbitMQ node.
-</property>
-<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
-ABSOLUTE
-</property>
-<property type="boolean" id="isrow" mode="w" >
-True
-</property>
-<property type="string" id="rrdmin" mode="w" >
-0
-</property>
-<property type="string" id="description" mode="w" >
-Total received bytes per second on this RabbitMQ node.
-</property>
-</object>
-<object id='recvCount' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Total receive messages per second on this RabbitMQ node.
-</property>
-<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
-ABSOLUTE
-</property>
-<property type="boolean" id="isrow" mode="w" >
-True
-</property>
-<property type="string" id="rrdmin" mode="w" >
-0
-</property>
-<property type="string" id="description" mode="w" >
-Total receive messages per second on this RabbitMQ node.
-</property>
-</object>
-<object id='sendBytes' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Total send bytes per second on this RabbitMQ node.
-</property>
-<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
-ABSOLUTE
-</property>
-<property type="boolean" id="isrow" mode="w" >
-True
-</property>
-<property type="string" id="rrdmin" mode="w" >
-0
-</property>
-<property type="string" id="description" mode="w" >
-Total send bytes per second on this RabbitMQ node.
-</property>
-</object>
-<object id='sendCount' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Total send messages per second on this RabbitMQ node.
-</property>
-<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
-ABSOLUTE
-</property>
-<property type="boolean" id="isrow" mode="w" >
-True
-</property>
-<property type="string" id="rrdmin" mode="w" >
-0
-</property>
-<property type="string" id="description" mode="w" >
-Total send messages per second on this RabbitMQ node.
 </property>
 </object>
 <object id='sendQueue' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -270,16 +202,16 @@ rabbitmq_node_status
 4
 </property>
 <property type="string" id="commandTemplate" mode="w" >
-rabbitmqctl -q -n ${here/title} status 2&gt;&amp;1
+${here/ZenPackManager/packs/ZenPacks.community.RabbitMQ/path}/libexec/curl.sh -s http://${device/zRabbitMQAPIUsername}:${device/zRabbitMQAPIPassword}@${device/manageIp}:${device/zRabbitMQAPIPort}/api/overview
 </property>
 <property type="int" id="cycletime" mode="w" >
-60
+300
 </property>
 <property type="boolean" id="usessh" mode="w" >
-True
+False
 </property>
 <property type="string" id="parser" mode="w" >
-ZenPacks.community.RabbitMQ.parsers.RabbitMQCTL
+ZenPacks.community.RabbitMQ.parsers.RabbitMQAPI
 </property>
 </object>
 </tomanycont>
@@ -310,7 +242,7 @@ False
 True
 </property>
 <property type="long" id="sequence" mode="w" >
-4
+2
 </property>
 <tomanycont id='graphPoints'>
 <object id='Consumers' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
@@ -539,178 +471,6 @@ AVERAGE
 </object>
 </tomanycont>
 </object>
-<object id='Throughput - Bytes' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
-<property type="int" id="height" mode="w" >
-100
-</property>
-<property type="int" id="width" mode="w" >
-500
-</property>
-<property type="string" id="units" mode="w" >
-bytes/sec
-</property>
-<property type="boolean" id="log" mode="w" >
-False
-</property>
-<property type="boolean" id="base" mode="w" >
-False
-</property>
-<property type="int" id="miny" mode="w" >
-0
-</property>
-<property type="int" id="maxy" mode="w" >
--1
-</property>
-<property type="boolean" id="hasSummary" mode="w" >
-True
-</property>
-<property type="long" id="sequence" mode="w" >
-3
-</property>
-<tomanycont id='graphPoints'>
-<object id='Received' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property type="long" id="sequence" mode="w" >
-1
-</property>
-<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
-LINE
-</property>
-<property type="long" id="lineWidth" mode="w" >
-2
-</property>
-<property type="boolean" id="stacked" mode="w" >
-False
-</property>
-<property type="string" id="format" mode="w" >
-%7.2lf%s
-</property>
-<property type="string" id="legend" mode="w" >
-${graphPoint/id}
-</property>
-<property type="long" id="limit" mode="w" >
--1
-</property>
-<property type="string" id="dpName" mode="w" >
-rabbitConnections_recvBytes
-</property>
-<property type="string" id="cFunc" mode="w" >
-AVERAGE
-</property>
-</object>
-<object id='Sent' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
-LINE
-</property>
-<property type="long" id="lineWidth" mode="w" >
-2
-</property>
-<property type="boolean" id="stacked" mode="w" >
-False
-</property>
-<property type="string" id="format" mode="w" >
-%7.2lf%s
-</property>
-<property type="string" id="legend" mode="w" >
-${graphPoint/id}
-</property>
-<property type="long" id="limit" mode="w" >
--1
-</property>
-<property type="string" id="dpName" mode="w" >
-rabbitConnections_sendBytes
-</property>
-<property type="string" id="cFunc" mode="w" >
-AVERAGE
-</property>
-</object>
-</tomanycont>
-</object>
-<object id='Throughput - Messages' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
-<property type="int" id="height" mode="w" >
-100
-</property>
-<property type="int" id="width" mode="w" >
-500
-</property>
-<property type="string" id="units" mode="w" >
-messages/sec
-</property>
-<property type="boolean" id="log" mode="w" >
-False
-</property>
-<property type="boolean" id="base" mode="w" >
-False
-</property>
-<property type="int" id="miny" mode="w" >
-0
-</property>
-<property type="int" id="maxy" mode="w" >
--1
-</property>
-<property type="boolean" id="hasSummary" mode="w" >
-True
-</property>
-<property type="long" id="sequence" mode="w" >
-2
-</property>
-<tomanycont id='graphPoints'>
-<object id='Received' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property type="long" id="sequence" mode="w" >
-1
-</property>
-<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
-LINE
-</property>
-<property type="long" id="lineWidth" mode="w" >
-2
-</property>
-<property type="boolean" id="stacked" mode="w" >
-False
-</property>
-<property type="string" id="format" mode="w" >
-%7.2lf%s
-</property>
-<property type="string" id="legend" mode="w" >
-${graphPoint/id}
-</property>
-<property type="long" id="limit" mode="w" >
--1
-</property>
-<property type="string" id="dpName" mode="w" >
-rabbitConnections_recvCount
-</property>
-<property type="string" id="cFunc" mode="w" >
-AVERAGE
-</property>
-</object>
-<object id='Sent' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
-LINE
-</property>
-<property type="long" id="lineWidth" mode="w" >
-2
-</property>
-<property type="boolean" id="stacked" mode="w" >
-False
-</property>
-<property type="string" id="format" mode="w" >
-%7.2lf%s
-</property>
-<property type="string" id="legend" mode="w" >
-${graphPoint/id}
-</property>
-<property type="long" id="limit" mode="w" >
--1
-</property>
-<property type="string" id="dpName" mode="w" >
-rabbitConnections_sendCount
-</property>
-<property type="string" id="cFunc" mode="w" >
-AVERAGE
-</property>
-</object>
-</tomanycont>
-</object>
 </tomanycont>
 </object>
 <!-- ('', 'zport', 'dmd', 'Devices', 'rrdTemplates', 'RabbitMQQueue') -->
@@ -745,16 +505,17 @@ rabbitmq_node_status
 4
 </property>
 <property type="string" id="commandTemplate" mode="w" >
-rabbitmqctl -q -n ${here/rabbitmq_node_name} list_queues -p ${here/rabbitmq_vhost_name} name messages_ready messages_unacknowledged messages consumers memory 2&gt;&amp;1
+${here/ZenPackManager/packs/ZenPacks.community.RabbitMQ/path}/libexec/curl.sh -s http://${device/zRabbitMQAPIUsername}:${device/zRabbitMQAPIPassword}@${device/manageIp}:${device/zRabbitMQAPIPort}/api/queues/${here/rabbitmq_vhost_name}
+
 </property>
 <property type="int" id="cycletime" mode="w" >
 300
 </property>
 <property type="boolean" id="usessh" mode="w" >
-True
+False
 </property>
 <property type="string" id="parser" mode="w" >
-ZenPacks.community.RabbitMQ.parsers.RabbitMQCTL
+ZenPacks.community.RabbitMQ.parsers.RabbitMQAPI
 </property>
 <tomanycont id='datapoints'>
 <object id='consumers' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
