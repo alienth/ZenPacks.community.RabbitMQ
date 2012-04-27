@@ -3,8 +3,8 @@
 # or saved.  Do not modify them directly here.
 # NB: PACKAGES is deprecated
 NAME = "ZenPacks.community.RabbitMQ"
-VERSION = "1.0.0~alienth1"
-AUTHOR = "Zenoss Labs"
+VERSION = "0.0.1"
+AUTHOR = "Jason Harvey"
 LICENSE = ""
 NAMESPACE_PACKAGES = ['ZenPacks', 'ZenPacks.community']
 PACKAGES = ['ZenPacks', 'ZenPacks.community', 'ZenPacks.community.RabbitMQ']
