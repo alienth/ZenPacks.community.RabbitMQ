@@ -73,7 +73,7 @@ class RabbitMQAPI(CommandParser):
         # Rather than not record data when no connections are open we need to
         # records zeros.
         if len(connections) < 1:
-            for metric in gauge_metrics
+            for metric in gauge_metrics:
                 if metric in dp_map:
                     result.values.append((dp_map[metric], 0))
 
@@ -93,46 +93,34 @@ class RabbitMQAPI(CommandParser):
         if 'sendQueue' in dp_map:
             result.values.append((dp_map['sendQueue'], reduce(
                 lambda x, y: x + y,
-                (x['sendQueue'] for x in connections))))
+                (x['send_pend'] for x in connections))))
 
 
     def processListChannelsResults(self, cmd, result):
-        channels = {}
-
-        for line in cmd.result.output.split('\n'):
-            if not line:
-                continue
-
-            fields = re.split(r'\s+', line.rstrip())
-
-            # pid consumer_count messages_unacknowledged acks_uncommitted
-            if len(fields) != 4:
-                return
-
-            channels[fields[0]] = dict(
-                consumers=int(fields[1]),
-                unacknowledged=int(fields[2]),
-                uncommitted=int(fields[3]),
-                )
+        channels = json.loads(result)
 
         dp_map = dict([(dp.id, dp) for dp in cmd.points])
 
-        metrics = ('consumers', 'unacknowledged', 'uncommitted')
+        # dict of dp name to API name
+        metrics = {'consumers':      'consumer_count',
+                   'unacknowledged': 'messages_unacknowledged',
+                   'uncommitted':    'acks_uncommitted',
+                  }
 
         # Rather than not record data when no connections are open we need to
         # records zeros.
-        if len(channels.keys()) < 1:
-            for metric in metrics:
+        if len(channels) < 1:
+            for metric in metrics.keys():
                 if metric in dp_map:
                     result.values.append((dp_map[metric], 0))
 
             return
 
-        for metric in metrics:
+        for metric in metrics.keys():
             if metric in dp_map:
                 result.values.append((dp_map[metric], reduce(
                     lambda x, y: x + y,
-                    (x[metric] for x in channels.values()))))
+                    (x[metrics[metric]] for x in channels))))
 
     def processListQueuesResults(self, cmd, result):
         queues = {}
