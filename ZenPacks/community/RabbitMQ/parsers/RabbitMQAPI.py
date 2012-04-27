@@ -11,6 +11,9 @@
 #
 ###########################################################################
 
+import logging
+LOG = logging.getLogger('zen.RabbitMQ')
+
 import json
 import md5
 import os
@@ -54,7 +57,7 @@ class RabbitMQAPI(CommandParser):
 
     def processAliveResults(self, cmd, result):
 
-        data = json.loads(result)
+        data = json.loads(cmd.result.output)
         if data['status'] == 'ok':
             result.events.append(self.getEvent(
                 cmd, "alive check OK", clear=True))
@@ -63,7 +66,7 @@ class RabbitMQAPI(CommandParser):
                 cmd, "alive check failed"))
 
     def processListConnectionsResults(self, cmd, result):
-        connections = json.loads(result)
+        connections = json.loads(cmd.result.output)
 
         dp_map = dict([(dp.id, dp) for dp in cmd.points])
 
@@ -97,7 +100,7 @@ class RabbitMQAPI(CommandParser):
 
 
     def processListChannelsResults(self, cmd, result):
-        channels = json.loads(result)
+        channels = json.loads(cmd.result.output)
 
         dp_map = dict([(dp.id, dp) for dp in cmd.points])
 
@@ -123,16 +126,16 @@ class RabbitMQAPI(CommandParser):
                     (x[metrics[metric]] for x in channels))))
 
     def processListQueuesResults(self, cmd, result):
-        queuedata = json.loads(result)
+        queuedata = json.loads(cmd.result.output)
 
         queues = {}
         for queue in queuedata:
-            queues[queuedata['name']] = dict(
-                ready =           queuedata['messages_ready'],
-                unacknowledged =  queuedata['messages_unacknowledged'],
-                messages =        queuedata['messages'],
-                consumers =       queuedata['consumers'],
-                memory =          queuedata['memory'],
+            queues[queue['name']] = dict(
+                ready =           queue['messages_ready'],
+                unacknowledged =  queue['messages_unacknowledged'],
+                messages =        queue['messages'],
+                consumers =       queue['consumers'],
+                memory =          queue['memory'],
                 )
 
         if len(queues.keys()) < 1:
@@ -149,10 +152,11 @@ class RabbitMQAPI(CommandParser):
 
     def isError(self, cmd, result):
         try:
-            json.loads(result)
+            json.loads(cmd.result.output)
         except:
             result.events.append(self.getEvent(
                 cmd, "could not parse json"))
+            LOG.warning('could not parse json')
             return True
 
         if cmd.result.exitCode != 0:
