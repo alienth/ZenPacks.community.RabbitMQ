@@ -21,36 +21,6 @@ import time
 from Products.ZenRRD.CommandParser import CommandParser
 
 
-def getTempFilename(keys):
-    return os.path.join(
-        tempfile.gettempdir(),
-        '.zenoss_rabbitmq_%s' % md5.md5('+'.join(keys)).hexdigest())
-
-
-def saveData(keys, data):
-    tmpfile = getTempFilename(keys)
-    tmp = open(tmpfile, 'w')
-    json.dump(data, tmp)
-    tmp.close()
-
-
-def loadData(keys, expiration=1800):
-    tmpfile = getTempFilename(keys)
-    if not os.path.isfile(tmpfile):
-        return None
-
-    # Make sure temporary data isn't too stale.
-    if os.stat(tmpfile).st_mtime < (time.time() - expiration):
-        os.unlink(tmpfile)
-        return None
-
-    tmp = open(tmpfile, 'r')
-    data = json.load(tmp)
-    tmp.close()
-
-    return data
-
-
 class RabbitMQAPI(CommandParser):
     eventKey = eventClassKey = 'rabbitmq_node_status'
 
