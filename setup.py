@@ -3,7 +3,7 @@
 # or saved.  Do not modify them directly here.
 # NB: PACKAGES is deprecated
 NAME = "ZenPacks.community.RabbitMQ"
-VERSION = "0.0.1"
+VERSION = "0.1.0"
 AUTHOR = "Jason Harvey"
 LICENSE = ""
 NAMESPACE_PACKAGES = ['ZenPacks', 'ZenPacks.community']
