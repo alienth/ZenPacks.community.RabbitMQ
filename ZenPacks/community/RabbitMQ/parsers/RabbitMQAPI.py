@@ -98,12 +98,12 @@ class RabbitMQAPI(CommandParser):
         dp_map = dict([(dp.id, dp) for dp in cmd.points])
 
         gauge_metrics = ('connections', 'channels', 'sendQueue')
-        delta_metrics = ('recvBytes', 'recvCount', 'sendBytes', 'sendCount')
+        #delta_metrics = ('recvBytes', 'recvCount', 'sendBytes', 'sendCount')
 
         # Rather than not record data when no connections are open we need to
         # records zeros.
-        if len(connections.keys()) < 1:
-            for metric in gauge_metrics + delta_metrics:
+        if len(connections) < 1:
+            for metric in gauge_metrics
                 if metric in dp_map:
                     result.values.append((dp_map[metric], 0))
 
@@ -118,42 +118,13 @@ class RabbitMQAPI(CommandParser):
         if 'channels' in dp_map:
             result.values.append((dp_map['channels'], reduce(
                 lambda x, y: x + y,
-                (x['channels'] for x in connections.values()))))
+                (x['channels'] for x in connections))))
 
         if 'sendQueue' in dp_map:
             result.values.append((dp_map['sendQueue'], reduce(
                 lambda x, y: x + y,
-                (x['sendQueue'] for x in connections.values()))))
+                (x['sendQueue'] for x in connections))))
 
-        # For metrics that require getting a difference since the last
-        # collection we need to break it down by individual connection.
-        # Otherwise we'd get bad data as connections come and go.
-        deltas = {}
-        for metric in delta_metrics:
-            deltas[metric] = 0
-
-        data_keys = [cmd.deviceConfig.device, cmd.component, 'connections']
-        old = loadData(data_keys) or {}
-        saveData(data_keys, connections)
-
-        # Start by calculating deltas for PIDs that have a previous value.
-        for pid in set(connections.keys()) & set(old.keys()):
-            for metric in delta_metrics:
-                delta = connections[pid][metric] - old[pid][metric]
-                if delta < 0:
-                    delta = connections[pid][metric]
-
-                deltas[metric] += delta
-
-        # For new PIDs we can use the current value as the delta.
-        for pid in set(connections.keys()) - set(old.keys()):
-            for metric in delta_metrics:
-                deltas[metric] += connections[pid][metric]
-
-        for metric in delta_metrics:
-            if metric in dp_map:
-                result.values.append((
-                    dp_map[metric], deltas[metric]))
 
     def processListChannelsResults(self, cmd, result):
         channels = {}
